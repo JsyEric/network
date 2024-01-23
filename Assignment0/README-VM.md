@@ -4,7 +4,7 @@
 Multipass is a Ubuntu VM orchastrator. It quickly and easily installs VMs using you system's default hypervisor.
 3. Launch an Ubuntu VM that you can use to develop and test your code. Run: 
 ```bash
-cd assignments-spring24
+cd assignments-spring24/Assignment0
 multipass launch focal -n cn-a0 --cloud-init config.yaml
 ```
 After the VM launches, use the following command to open as many shells as you need:
