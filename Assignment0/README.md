@@ -54,6 +54,8 @@ Make sure that your client and server support the following:
 
 * Several messages sent concurrently from separate clients to one server
 
+Also note that we will be using IPv4 (127.0.0.1) to run the server process. When defining 'sockaddr_in' struct, make sure you provide flags that bind the socket to IPv4 (AF_INET) or both IPv4 and IPv6 (AF_UNSPEC).
+
 ## Test Environment & Debugging
 Here are some debugging tips. If you are still having trouble, ask a question on Canvas or see an instructor during office hours.
 

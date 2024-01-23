@@ -1,6 +1,7 @@
 # Instructions for testing Multipass environment (A0)
 1. Clone This repository
-2. Install Multipass on your system. Follow the instructions in this link to install Multipass: https://multipass.run/install. Multipass is a Ubuntu VM orchastrator. It quickly and easily installs VMs using you system's default hypervisor.
+2. Install Multipass on your system. Follow the instructions in this link to install Multipass: [https://multipass.run/install](https://multipass.run/install).
+Multipass is a Ubuntu VM orchastrator. It quickly and easily installs VMs using you system's default hypervisor.
 3. Launch an Ubuntu VM that you can use to develop and test your code. Run: 
 ```bash
 cd assignments-spring24
