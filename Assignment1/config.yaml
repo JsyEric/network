@@ -28,4 +28,4 @@ packages:
 runcmd:
  - cd /home/ubuntu
  - git clone https://bitbucket.org/jhu-cs-comp-nets/assignments-spring24.git
- - chown ubuntu:ubuntu assignments-spring24
+ - chown -R ubuntu:ubuntu assignments-spring24
