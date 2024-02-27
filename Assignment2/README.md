@@ -24,7 +24,7 @@ Detailed requirements are outlined below.
 ## Getting Started
 This assignment runs on top of [Mininet](http://mininet.org), which allows you to emulate a topology on a single machine. It provides the needed isolation between the emulated nodes so that your router node can process and forward real Ethernet frames between the hosts like a real router.
 
-We have set up Mininet on a custom Multipass VM for this assignment. This VM is different from the one provided in previous assignments, and **you should use this VM to test your code for the assignment**. This assignment assumes that you have already downloaded and installed the Multipass VM. Refer to README-VM.md for instructions on how to set up the VM.
+We have set up Mininet on a custom Multipass VM for this assignment. This VM is different from the one provided in previous assignments, and **you should use this VM to test your code for the assignment**. This assignment assumes that you have already downloaded and installed the Multipass VM. Refer to README-VM.md for instructions on how to set up the VM. **Make sure your environment is set up and working properly before continuing!**
 
 ### Configuration Files
 There are two configuration files for the router.
@@ -260,10 +260,11 @@ There are some basic debugging functions in ```sr_utils.h```, ```sr_utils.c```. 
 
 ---
 ## Reference Binary
-To help you debug your topologies and understand the required behavior we provide a reference binary and you can find it at ```assignments-spring24/Assignment2/src/sr_solution``` in your directory. Instructions for how to use it are in the [Running the Emulation](#running-the-emulation) section above.
+To help you debug your topologies and understand the required behavior we provide a reference binary and you can find it at ```assignments-spring24/Assignment2/src/sr_solution``` (and `sr_solution_macm` for ARM Macs) in your directory. Instructions for how to use it are in the [Running the Emulation](#running-the-emulation) section above.
 
 ---
 ## Requirements Summary
+Please checkout the tutorial slides for a complete checklist of what we test for this assignment. In summary:
 - The router must successfully route packets between the Internet and the application servers.
 - The router must correctly handle ARP requests and replies.
 - The router must respond correctly to ICMP echo requests (ping commands).
@@ -281,7 +282,8 @@ Due to the complexities of the Mininet setup, we will not be able to autograde t
 In addition to your router being able to perform these commands, make sure that you are sending the appropriate ICMP messages under different types of "error" cases, as detailed in the [ICMP](#internet-control-message-protocol-icmp) section and the [Requirements Summary](#requirements-summary).
 
 ---
-## Submission Instructions
+## Submission Instructions 
+#submission-instructions
 You will be required to submit a ```README.md``` along with your code for this assignment. In your README, please describe your design decisions. We have provided a ```README.md``` skeleton in the ```/src/router``` folder. The ```README``` will be worth 10% of the assignment grade.
 
 Zip up the files in your ```assignments-spring24/Assignment2/src/router``` folder by running the following command:
@@ -291,3 +293,5 @@ $ make clean
 $ zip -9r router-JHED.zip Makefile README.md rtable auth_key *.h *.c
 ```
 Replace JHED with your JHED ID. Submit the zip file to Gradescope.
+
+Your Submission will be graded immediately after the submission deadline. Late submissions will be graded after the late submission deadline.
