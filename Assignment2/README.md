@@ -282,8 +282,8 @@ Due to the complexities of the Mininet setup, we will not be able to autograde t
 In addition to your router being able to perform these commands, make sure that you are sending the appropriate ICMP messages under different types of "error" cases, as detailed in the [ICMP](#internet-control-message-protocol-icmp) section and the [Requirements Summary](#requirements-summary).
 
 ---
-## Submission Instructions 
-#submission-instructions
+## Submission Instructions
+
 You will be required to submit a ```README.md``` along with your code for this assignment. In your README, please describe your design decisions. We have provided a ```README.md``` skeleton in the ```/src/router``` folder. The ```README``` will be worth 10% of the assignment grade.
 
 Zip up the files in your ```assignments-spring24/Assignment2/src/router``` folder by running the following command:
