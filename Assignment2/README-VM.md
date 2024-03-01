@@ -134,6 +134,27 @@ multipass transfer cn-2:/path/to/source /path/to/destination
 ## Using git to move your code from/to the virtual machine
 Your VM should have internet access if installed correctly. You can use your own private git repository to move code from/to the virtual machine.
 
+## Mounting a directory from your Windows into the VM 
+This is for windows users who cannot develop using VSCode's remote SSH and seems to fail on some MAC machines, if you got it working on MAC let us know!
+Using this technique, you can develop on your windows system and see the changes and compile/test in the VM.
+
+First, check if privileged-mounts is true in your system:
+
+```bash
+multipass get local.privileged-mounts
+```
+
+If the value returned is false, set it to true:
+```
+multipass set local.privileged-mounts=true
+```
+Then mount a directory using this command:
+
+```
+multipass mount [where you cloned assignments repository] cn-at:/home/ubuntu/[a_directory_that_does_not_exist]
+```
+Remember to replace the two parameters accordingly!
+
 ### FAQ
 Q: Can I run my code on my own system instead of the virtual machine?
 
@@ -142,6 +163,10 @@ A: No, this assignment must be run in the provided VM environment.
 Q: Do I need to install any software dependencies to use Multipass?
 
 Linux users can install multipass using **snap** which will automatically take care of dependencies. Mac users, similarly, will use brew. Some Windows users might see this warning during Multipass installation: "Oracle Virtualbox is required on Windows Home Edition". If HyperV is unavailable in your system, please follow [this](https://www.virtualbox.org/wiki/Downloads) link to install Virtualbox after installing Multipass. 
+
+Q: I encountered "permission error" when trying to change the existing assignments-spring24/ directory inside the VM.
+
+A: In the home of the VM, run: `sudo chown -R ubuntu:ubuntu assignments-spring24`
 
 ### A note for Windows users who use Virtualbox
 We have noticed that when you are connected to JHU network, the VM will not be assigned an IP address. The easiest workaround is to connect to your mobile hotspot before creating the VM. 
