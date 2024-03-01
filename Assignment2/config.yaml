@@ -19,6 +19,7 @@ packages:
  - python2
  - python-is-python2
  - unzip
+ - zip
  - net-tools
  - traceroute
  - dos2unix
@@ -28,4 +29,4 @@ runcmd:
  - cd /home/ubuntu
  - git clone https://github.com/mininet/mininet
  - git clone https://bitbucket.org/jhu-cs-comp-nets/assignments-spring24.git
- - chown ubuntu:ubuntu assignments-spring24
+ - chown -R ubuntu:ubuntu assignments-spring24
