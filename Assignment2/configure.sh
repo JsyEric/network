@@ -7,7 +7,7 @@ MININET_VERSION="2.3.0"
 POX_VERSION=angler
 
 sudo chown -R ubuntu:ubuntu mininet
-sudo chown -R ubuntu:ubuntu assignments-private
+sudo chown -R ubuntu:ubuntu assignments-spring24
 
 (cd mininet && git checkout $MININET_VERSION)
 sed -i 's+git://github.com/mininet/openflow+https://github.com/mininet/openflow+g' mininet/util/install.sh
