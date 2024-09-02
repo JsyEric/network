@@ -7,7 +7,7 @@ MININET_VERSION="2.3.0"
 POX_VERSION=angler
 
 sudo chown -R ubuntu:ubuntu mininet
-sudo chown -R ubuntu:ubuntu assignments-spring24
+sudo chown -R ubuntu:ubuntu assignments-fall24
 
 sudo apt install python-dev -y
 

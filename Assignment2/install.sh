@@ -15,7 +15,7 @@ git checkout $POX_VERSION
 popd
 
 
-pushd assignments-spring24/Assignment2/src/pox_module
+pushd assignments-fall24/Assignment2/src/pox_module
 sudo python setup.py develop
 
 pkill -9 sr_solution

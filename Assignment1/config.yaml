@@ -28,5 +28,5 @@ packages:
 
 runcmd:
  - cd /home/ubuntu
- - git clone https://bitbucket.org/jhu-cs-comp-nets/assignments-spring24.git
- - chown -R ubuntu:ubuntu assignments-spring24
+ - git clone https://bitbucket.org/jhu-cs-computer-networks/assignments-fall24.git
+ - chown -R ubuntu:ubuntu assignments-fall24

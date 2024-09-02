@@ -4,7 +4,7 @@
 Multipass is a Ubuntu VM orchastrator. It quickly and easily installs VMs using you system's default hypervisor.
 3. Launch an Ubuntu VM that you can use to develop and test your code. Run: 
 ```bash
-cd assignments-spring24/Assignment3
+cd assignments-fall24/Assignment3
 multipass launch focal -n cn-a3 --cloud-init config.yaml
 ```
 After the VM launches, use the following command to open as many shells as you need:
@@ -39,7 +39,7 @@ Now, you will have SSH access to the VM. Using the IP address that you grabbed f
 ssh ubuntu@<ip address>
 ```
 If you see VM's shell, the next step is to set up VSCode. Open your VSCode and install **Remote - SSH** extension. Click on the `><` button on the bottom left corner and select `connect to host...`.
-Then add a new host entry like this: `ubuntu@<VM IP address>` and try connecting to the VM. After the connection is established (usually takes 30 seconds), open the file explorer and select the assignments-spring24 directory. 
+Then add a new host entry like this: `ubuntu@<VM IP address>` and try connecting to the VM. After the connection is established (usually takes 30 seconds), open the file explorer and select the assignments-fall24 directory. 
 
 
 See this guide for more information: https://code.visualstudio.com/docs/remote/ssh
@@ -54,7 +54,7 @@ and follow the prompts. Usually, you will want to use the default location and n
 ## Transferring your code from/to the virtual machine
 You can use the following commands to transfer files to and from the VM if you prefer to develop your code locally on your machine.
 
-To use this method, create a private repository for yourself, copy the reposory address and use the following command in the `assignments-spring24` directory inside the VM to add a new remote:
+To use this method, create a private repository for yourself, copy the reposory address and use the following command in the `assignments-fall24` directory inside the VM to add a new remote:
 
 ```bash
 git remote add private <your private repository address>
