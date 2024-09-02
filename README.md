@@ -1,4 +1,4 @@
-# Welcome to Computer Netowrks 414/614 Spring 2024!
+# Welcome to Computer Netowrks 414/614 Fall 2024!
 We will use this repository to release course assignments. 
 
 ## Getting started with each assignment

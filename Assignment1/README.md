@@ -1,6 +1,5 @@
 # **Assignment 1: HTTP Proxy**
 
-## Due Date: February 27th, 2024 at 5 pm EST
 
 
 - [**Assignment 1: HTTP Proxy**](#assignment-1-http-proxy)
@@ -15,6 +14,7 @@
     - [**Getting Data from the Remote Server**](#getting-data-from-the-remote-server)
     - [**Returning Data to the Client**](#returning-data-to-the-client)
     - [**Testing Your Proxy**](#testing-your-proxy)
+  - [Test Environment](#test-environment)
   - [**Configuring a Web Browser to Use a Proxy**](#configuring-a-web-browser-to-use-a-proxy)
     - [**Firefox**](#firefox)
       - [**Configuring Firefox to use HTTP/1.0**](#configuring-firefox-to-use-http10)

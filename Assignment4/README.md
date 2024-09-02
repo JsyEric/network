@@ -1,7 +1,5 @@
 # Assignment 4: Internet Measurement
 
-## Due Date: Friday, April 26, 2024 at 5 pm EST
-
 In this assignment, you will analyze publicly-available measurement data to understand important properties of the Internet.
 
 ## Submission Instructions

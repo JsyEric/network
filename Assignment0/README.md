@@ -1,6 +1,5 @@
 # Assignment 0: Socket Programming
 
-**Due Tuesday February 6th, 5:00PM**
 
 **Please make sure to thoroughly read this before getting to the implementation.**
 

@@ -1,6 +1,5 @@
 # Assignment 2: Router
 
-### Due Date: March 26th, 5pm
 This assignment is longer than the previous assignments, please start early. Please adhere to the [Submission Instructions](#submission-instructions) below.
 
 ---
