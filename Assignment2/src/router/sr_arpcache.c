@@ -29,10 +29,34 @@ void handle_arpreq(struct sr_instance *sr, struct sr_arpreq *request) {
     time_t now = time(NULL);
     if (difftime(now, request->sent)>=1.0) {
         if (request->times_sent >= 5) {
-
+            struct sr_packet *packet_walker = request->packets;
+            while (packet_walker) {
+                sr_send_icmp_packet(sr, packet_walker->buf, packet_walker->len, packet_walker->iface, 3, 1);
+                packet_walker = packet_walker->next;
+            }
+            sr_arpreq_destroy(&(sr->cache), request);
         } else {
-            
-        }
+            uint8_t *packet = (uint8_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_arp_hdr_t));
+            sr_ethernet_hdr_t *eth_hdr = (sr_ethernet_hdr_t *)packet;
+            sr_arp_hdr_t *arp_hdr = (sr_arp_hdr_t *)(packet + sizeof(sr_ethernet_hdr_t));
+            struct sr_if *interface = sr_get_interface(sr, request->packets->iface);
+            eth_hdr->ether_type = htons(ethertype_arp);
+            memcpy(eth_hdr->ether_shost, interface->addr, ETHER_ADDR_LEN);
+            memset(eth_hdr->ether_dhost, 0xff, ETHER_ADDR_LEN);
+            arp_hdr->ar_hrd = htons(arp_hrd_ethernet);
+            arp_hdr->ar_pro = htons(ethertype_ip);
+            arp_hdr->ar_hln = ETHER_ADDR_LEN;
+            arp_hdr->ar_pln = 4;
+            arp_hdr->ar_op = htons(arp_op_request);
+            memcpy(arp_hdr->ar_sha, interface->addr, ETHER_ADDR_LEN);
+            arp_hdr->ar_sip = interface->ip;
+            memset(arp_hdr->ar_tha, 0, ETHER_ADDR_LEN);
+            arp_hdr->ar_tip = request->ip;
+            sr_send_packet(sr, packet, sizeof(sr_ethernet_hdr_t) + sizeof(sr_arp_hdr_t), interface->name);
+            request->sent = now;
+            request->times_sent++;
+            free(packet);
+        } 
     } 
 }
 

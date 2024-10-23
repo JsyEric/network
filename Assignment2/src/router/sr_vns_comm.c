@@ -40,7 +40,7 @@
 #include "sr_router.h"
 #include "sr_if.h"
 #include "sr_protocol.h"
-
+#include "sr_utils.h"
 #include "sha1.h"
 #include "vnscommand.h"
 
@@ -572,6 +572,8 @@ int sr_send_packet(struct sr_instance* sr /* borrowed */,
     assert(buf);
     assert(iface);
 
+    printf("Sending packet out of interface: %s\n", iface);
+    print_hdrs(buf, len);
     /* don't waste my time ... */
     if ( len < sizeof(struct sr_ethernet_hdr) ){
         fprintf(stderr , "** Error: packet is wayy to short \n");

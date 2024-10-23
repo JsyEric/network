@@ -67,7 +67,6 @@ void sr_handlepacket(struct sr_instance* , uint8_t * , unsigned int , char* );
 
 /* Add additional helper method declarations here! */
 void sr_send_icmp_packet(struct sr_instance* , uint8_t *, unsigned int , char *, uint8_t , uint8_t );
-void sr_send_arp_packet(struct sr_instance* , uint8_t *, unsigned int , char *, uint16_t );
 /* -- sr_if.c -- */
 struct sr_if *sr_get_interface(struct sr_instance*, const char* );
 struct sr_if *get_interface_from_ip(struct sr_instance*, uint32_t );

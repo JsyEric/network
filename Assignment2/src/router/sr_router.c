@@ -117,7 +117,6 @@ void sr_handlepacket(struct sr_instance* sr,
     }
   } else if (ethtype == ethertype_arp) {
     sr_handle_arp_packet(sr, packet_copy+sizeof(sr_ethernet_hdr_t), len-sizeof(sr_ethernet_hdr_t), interface);
-
   } 
 
   free(packet_copy);
@@ -188,7 +187,42 @@ static void sr_handle_arp_packet(struct sr_instance* sr,
         uint8_t * packet/* lent */,
         unsigned int len,
         char* interface/* lent */)
-{
+{ 
+  sr_arp_hdr_t *arp_hdr = (sr_arp_hdr_t *)packet;
+  sr_ethernet_hdr_t *eth_hdr = (sr_ethernet_hdr_t *)(packet - sizeof(sr_ethernet_hdr_t));
+  
+  if (arp_hdr->ar_op == htons(arp_op_request)) {
+    if (arp_hdr->ar_tip == sr_get_interface(sr, interface)->ip) {
+      eth_hdr->ether_type = htons(ethertype_arp);
+      for (int i = 0; i < ETHER_ADDR_LEN; i++) {
+        eth_hdr->ether_dhost[i] = arp_hdr->ar_sha[i];
+        eth_hdr->ether_shost[i] = sr_get_interface(sr, interface)->addr[i];
+      }
+      arp_hdr->ar_op = htons(arp_op_reply);
+      for (int i = 0; i < ETHER_ADDR_LEN; i++) {
+        arp_hdr->ar_tha[i] = arp_hdr->ar_sha[i];
+        arp_hdr->ar_sha[i] = sr_get_interface(sr, interface)->addr[i];
+      }
+      arp_hdr->ar_tip = arp_hdr->ar_sip;
+      arp_hdr->ar_sip = sr_get_interface(sr, interface)->ip;
+      sr_send_packet(sr, packet-sizeof(sr_ethernet_hdr_t), len+sizeof(sr_ethernet_hdr_t), interface);
+    }
+  } else if (arp_hdr->ar_op == htons(arp_op_reply)) {
+    struct sr_arpreq *req = sr_arpcache_insert(&(sr->cache), arp_hdr->ar_sha, arp_hdr->ar_sip);
+    if (req) {
+      struct sr_packet *pkt_walker = req->packets;
+      while (pkt_walker) {
+        sr_ethernet_hdr_t *eth_hdr = (sr_ethernet_hdr_t *)(pkt_walker->buf);
+        for (int i = 0; i < ETHER_ADDR_LEN; i++) {
+          eth_hdr->ether_dhost[i] = arp_hdr->ar_sha[i];
+          eth_hdr->ether_shost[i] = sr_get_interface(sr, pkt_walker->iface)->addr[i];
+        }
+        sr_send_packet(sr, pkt_walker->buf, pkt_walker->len, pkt_walker->iface);
+        pkt_walker = pkt_walker->next;
+      }
+      sr_arpreq_destroy(&(sr->cache), req);
+    }
+  }
   return;
 }
 
@@ -256,14 +290,6 @@ void sr_send_icmp_packet(struct sr_instance* sr,
   return;
 }
 
-void sr_send_arp_packet(struct sr_instance* sr,
-        uint8_t * packet/* lent */,
-        unsigned int len,
-        char* interface/* lent */,
-        uint16_t opcode)
-{
-  return;
-}
 
 static uint32_t longest_prefix_match(struct sr_instance* sr, uint32_t ip)
 {
