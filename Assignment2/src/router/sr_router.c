@@ -132,10 +132,13 @@ static int sr_handle_ip_packet(struct sr_instance* sr,
 { 
   sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)packet;  
   // check the length of the packet and send icmp packet if necessary
-  if (len < sizeof(sr_ip_hdr_t) || cksum(packet, sizeof(sr_ip_hdr_t)) != ip_hdr->ip_sum) { 
+  uint16_t tmp = ip_hdr->ip_sum;
+  ip_hdr->ip_sum = 0;
+  if (len < sizeof(sr_ip_hdr_t) || cksum(packet, sizeof(sr_ip_hdr_t)) != tmp) { 
     sr_send_icmp_packet(sr, packet, len, interface, 3, 0);
     return 0;
   }
+  ip_hdr->ip_sum = tmp;
 
   ip_hdr->ip_ttl--;
   if (ip_hdr->ip_ttl == 0) {
@@ -245,6 +248,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     memcpy(eth_hdr->ether_dhost, ori_eth_hdr->ether_shost, sizeof(uint8_t) * ETHER_ADDR_LEN);
     // fill original ip header and icmp header
     memcpy(eth_hdr + sizeof(sr_ethernet_hdr_t), packet, len);
+    printf("icmp echo reply\n");
     print_hdrs((uint8_t *)eth_hdr, len + sizeof(sr_ethernet_hdr_t));
     // modify ip header
     sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t));
