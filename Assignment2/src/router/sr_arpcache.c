@@ -17,11 +17,23 @@
   See the comments in the header file for an idea of what it should look like.
 */
 void sr_arpcache_sweepreqs(struct sr_instance *sr) {
-    /* fill in code here */
+    struct sr_arpreq *req_walker = sr->cache.requests;
+    while (req_walker) {
+        struct sr_arpreq *next = req_walker->next;
+        handle_arpreq(sr, req_walker);
+        req_walker = next;
+    }
 }
 
 void handle_arpreq(struct sr_instance *sr, struct sr_arpreq *request) {
-    /* fill in code here */
+    time_t now = time(NULL);
+    if (difftime(now, request->sent)>=1.0) {
+        if (request->times_sent >= 5) {
+
+        } else {
+            
+        }
+    } 
 }
 
 /* You should not need to touch the rest of this code. */
