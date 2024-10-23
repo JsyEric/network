@@ -87,7 +87,8 @@ void sr_handlepacket(struct sr_instance* sr,
   /* REQUIRES */
   assert(sr);
   assert(packet);
-  assert(interface);
+  assert(interface);  
+  print_hdrs(packet, len);
 
   // replicate the packet
   uint8_t *packet_copy = (uint8_t *)malloc(len);
@@ -130,7 +131,7 @@ static int sr_handle_ip_packet(struct sr_instance* sr,
         char* interface/* lent */,
         struct sr_arpentry **entry)
 { 
-  sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)packet;
+  sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)packet;  
   // check the length of the packet and send icmp packet if necessary
   if (len < sizeof(sr_ip_hdr_t) || cksum(packet, sizeof(sr_ip_hdr_t)) != ip_hdr->ip_sum) { 
     sr_send_icmp_packet(sr, packet, len, interface, 3, 0);
