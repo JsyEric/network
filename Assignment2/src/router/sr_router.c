@@ -245,6 +245,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     memcpy(eth_hdr->ether_dhost, ori_eth_hdr->ether_shost, sizeof(uint8_t) * ETHER_ADDR_LEN);
     // fill original ip header and icmp header
     memcpy(eth_hdr + sizeof(sr_ethernet_hdr_t), packet, len);
+    print_hdrs((uint8_t *)eth_hdr, len + sizeof(sr_ethernet_hdr_t));
     // modify ip header
     sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t));
     ip_hdr->ip_ttl = INIT_TTL;
