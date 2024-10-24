@@ -261,6 +261,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     ip_hdr->ip_dst = temp;
     ip_hdr->ip_sum = 0;
     ip_hdr->ip_sum = cksum(ip_hdr, sizeof(sr_ip_hdr_t));
+    print_hdr_ip((uint8_t *)ip_hdr);
     // modify icmp header
     sr_icmp_hdr_t *icmp_hdr = (sr_icmp_hdr_t *)(ip_hdr + sizeof(sr_ip_hdr_t));
     icmp_hdr->icmp_type = type;
