@@ -196,7 +196,7 @@ static int sr_handle_ip_packet(struct sr_instance* sr,
   strcpy(if_name, fi.interface);
   // check the arp cache
 
-  *entry = sr_arpcache_lookup(&(sr->cache), next_hop_ip);
+  *entry = sr_arpcache_lookup(&(sr->cache), fi.next_hop);
   return 1;
 }
 
@@ -326,7 +326,7 @@ static struct forward_item longest_prefix_match(struct sr_instance* sr, uint32_t
     }
     rt_walker = rt_walker->next;
   }
-  return {next_hop_ip, rt_walker->interface};
+  return (struct forward_item){next_hop_ip, rt_walker->interface};
 }
 /* Add any additional helper methods here & don't forget to also declare
 them in sr_router.h.
