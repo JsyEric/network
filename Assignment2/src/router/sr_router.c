@@ -255,10 +255,10 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     ip_hdr->ip_len = ori_ip_hdr->ip_len;
     ip_hdr->ip_id = ori_ip_hdr->ip_id;
     ip_hdr->ip_off = ori_ip_hdr->ip_off;
+    ip_hdr->ip_p = ori_ip_hdr->ip_p;
     ip_hdr->ip_ttl = INIT_TTL;
-    uint32_t temp = ip_hdr->ip_src;
-    ip_hdr->ip_src = ip_hdr->ip_dst;
-    ip_hdr->ip_dst = temp;
+    ip_hdr->ip_src = ori_ip_hdr->ip_dst;
+    ip_hdr->ip_dst = ori_ip_hdr->ip_src;
     ip_hdr->ip_sum = 0;
     ip_hdr->ip_sum = cksum(ip_hdr, sizeof(sr_ip_hdr_t));
     print_hdr_ip((uint8_t *)ip_hdr);
@@ -294,6 +294,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
   }
+  print_hdrs((uint8_t *)eth_hdr, sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t));
   sr_send_packet(sr, (uint8_t *)eth_hdr, sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t), interface);
   free(eth_hdr);
   return;
