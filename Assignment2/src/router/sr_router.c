@@ -108,14 +108,17 @@ void sr_handlepacket(struct sr_instance* sr,
   if (ethtype == ethertype_ip) {
     struct sr_arpentry * entry = NULL;
     char if_name[sr_IFACE_NAMELEN];
+    memset(if_name, 0, sr_IFACE_NAMELEN);
     int res = sr_handle_ip_packet(sr, packet_copy+sizeof(sr_ethernet_hdr_t), len-sizeof(sr_ethernet_hdr_t), interface, &entry, if_name);
     if ( res == 1 && entry) {
       // send the packet
       struct sr_if * out_if = get_interface_from_ip(sr, entry->ip);
-      for (int i = 0; i < ETHER_ADDR_LEN; i++) {
-        eth_hdr->ether_dhost[i] = entry->mac[i];
-        eth_hdr->ether_shost[i] = out_if->addr[i];
-      }
+      // for (int i = 0; i < ETHER_ADDR_LEN; i++) {
+      //   eth_hdr->ether_dhost[i] = entry->mac[i];
+      //   eth_hdr->ether_shost[i] = out_if->addr[i];
+      // }
+      memcpy(eth_hdr->ether_dhost, entry->mac, ETHER_ADDR_LEN);
+      memcpy(eth_hdr->ether_shost, out_if->addr, ETHER_ADDR_LEN);
       sr_send_packet(sr, packet_copy, len, out_if->name);
       free(entry);
     }
