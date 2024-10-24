@@ -22,11 +22,19 @@
 #include "sr_arpcache.h"
 #include "sr_utils.h"
 
+struct forward_item
+{
+  uint32_t next_hop;
+  char *interface;
+};
+
+
 static int sr_handle_ip_packet(struct sr_instance* sr,
         uint8_t * packet/* lent */,
         unsigned int len,
         char* interface/* lent */,
-        struct sr_arpentry **entry);
+        struct sr_arpentry **entry,
+        char *if_name);
 
 static void sr_handle_arp_packet(struct sr_instance* sr,
         uint8_t * packet/* lent */,
@@ -34,7 +42,7 @@ static void sr_handle_arp_packet(struct sr_instance* sr,
         char* interface/* lent */);
 
 
-static uint32_t longest_prefix_match(struct sr_instance* sr, uint32_t ip);
+static struct forward_item longest_prefix_match(struct sr_instance* sr, uint32_t ip);
 /*---------------------------------------------------------------------
  * Method: sr_init(void)
  * Scope:  Global
@@ -99,7 +107,8 @@ void sr_handlepacket(struct sr_instance* sr,
   uint16_t ethtype = ntohs(eth_hdr->ether_type);
   if (ethtype == ethertype_ip) {
     struct sr_arpentry * entry = NULL;
-    int res = sr_handle_ip_packet(sr, packet_copy+sizeof(sr_ethernet_hdr_t), len-sizeof(sr_ethernet_hdr_t), interface, &entry);
+    char if_name[sr_IFACE_NAMELEN];
+    int res = sr_handle_ip_packet(sr, packet_copy+sizeof(sr_ethernet_hdr_t), len-sizeof(sr_ethernet_hdr_t), interface, &entry, if_name);
     if ( res == 1 && entry) {
       // send the packet
       struct sr_if * out_if = get_interface_from_ip(sr, entry->ip);
@@ -108,12 +117,12 @@ void sr_handlepacket(struct sr_instance* sr,
         eth_hdr->ether_shost[i] = out_if->addr[i];
       }
       sr_send_packet(sr, packet_copy, len, out_if->name);
+      free(entry);
     }
     else if ( res == 1 && !entry){ // entry not found
       // queue the packet
       sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(packet_copy+sizeof(sr_ethernet_hdr_t));
-      struct sr_if * out_if = get_interface_from_ip(sr, ip_hdr->ip_dst);
-      struct sr_arpreq *req = sr_arpcache_queuereq(&(sr->cache), out_if->ip, packet_copy, len, out_if->name);
+      struct sr_arpreq *req = sr_arpcache_queuereq(&(sr->cache), ip_hdr->ip_dst, packet_copy, len, if_name);
       handle_arpreq(sr, req);
     }
   } else if (ethtype == ethertype_arp) {
@@ -129,7 +138,8 @@ static int sr_handle_ip_packet(struct sr_instance* sr,
         uint8_t * packet/* lent */,
         unsigned int len,
         char* interface/* lent */,
-        struct sr_arpentry **entry)
+        struct sr_arpentry **entry,
+        char *if_name)
 { 
   sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)packet;  
   // check the length of the packet and send icmp packet if necessary
@@ -163,7 +173,7 @@ static int sr_handle_ip_packet(struct sr_instance* sr,
         if_walker = if_walker->next;
       }
     }
-  } else {
+  } else if (ip_hdr->ip_p == 6 || ip_hdr->ip_p == 17) {
     // if it is not icmp packet, but tcp or udp and it is sent to one of the interfaces, send icmp port unreachable
     struct sr_if *if_walker = sr->if_list;
     while (if_walker) {
@@ -173,14 +183,17 @@ static int sr_handle_ip_packet(struct sr_instance* sr,
       }
       if_walker = if_walker->next;
     }
+  } else {
+    return 0;
   }
 
-  uint32_t next_hop_ip = longest_prefix_match(sr, ip_hdr->ip_dst);
-  if (next_hop_ip == 0) {
+  struct forward_item fi = longest_prefix_match(sr, ip_hdr->ip_dst);
+  if (fi.next_hop == 0) {
     sr_send_icmp_packet(sr, packet, len, interface, 3, 0);
     return 0;
   }
 
+  strcpy(if_name, fi.interface);
   // check the arp cache
 
   *entry = sr_arpcache_lookup(&(sr->cache), next_hop_ip);
@@ -302,7 +315,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
 }
 
 
-static uint32_t longest_prefix_match(struct sr_instance* sr, uint32_t ip)
+static struct forward_item longest_prefix_match(struct sr_instance* sr, uint32_t ip)
 {
   uint32_t next_hop_ip = 0;
   struct sr_rt *rt_walker = sr->routing_table;
@@ -313,7 +326,7 @@ static uint32_t longest_prefix_match(struct sr_instance* sr, uint32_t ip)
     }
     rt_walker = rt_walker->next;
   }
-  return next_hop_ip;
+  return {next_hop_ip, rt_walker->interface};
 }
 /* Add any additional helper methods here & don't forget to also declare
 them in sr_router.h.
