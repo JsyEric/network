@@ -272,6 +272,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     icmp_hdr->icmp_code = code;
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
+    print_hdrs((uint8_t *)eth_hdr, total);
   } else { 
     eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_t3_hdr_t));
     // modify ethernet header
@@ -298,7 +299,6 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
   }
-  print_hdrs((uint8_t *)eth_hdr, sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t));
   sr_send_packet(sr, (uint8_t *)eth_hdr, sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t), interface);
   free(eth_hdr);
   return;
