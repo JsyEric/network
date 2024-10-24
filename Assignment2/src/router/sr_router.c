@@ -247,15 +247,14 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     eth_hdr->ether_type = htons(ethertype_ip);
     memcpy(eth_hdr->ether_shost, ori_eth_hdr->ether_dhost, sizeof(uint8_t) * ETHER_ADDR_LEN);
     memcpy(eth_hdr->ether_dhost, ori_eth_hdr->ether_shost, sizeof(uint8_t) * ETHER_ADDR_LEN);
-    // fill original ip header and icmp header
-    memcpy(eth_hdr + sizeof(sr_ethernet_hdr_t), packet, len);
-    printf("icmp echo reply\n");
-    print_hdr_eth((uint8_t *)eth_hdr);
-    print_hdr_ip((uint8_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t)));
-    print_hdr_icmp((uint8_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t)));
-    print_hdrs((uint8_t *)eth_hdr, len + sizeof(sr_ethernet_hdr_t));
     // modify ip header
     sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t));
+    ip_hdr->ip_v = ori_ip_hdr->ip_v;
+    ip_hdr->ip_hl = ori_ip_hdr->ip_hl;
+    ip_hdr->ip_tos = ori_ip_hdr->ip_tos;
+    ip_hdr->ip_len = ori_ip_hdr->ip_len;
+    ip_hdr->ip_id = ori_ip_hdr->ip_id;
+    ip_hdr->ip_off = ori_ip_hdr->ip_off;
     ip_hdr->ip_ttl = INIT_TTL;
     uint32_t temp = ip_hdr->ip_src;
     ip_hdr->ip_src = ip_hdr->ip_dst;
