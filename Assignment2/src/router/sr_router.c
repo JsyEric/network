@@ -244,7 +244,6 @@ void sr_send_icmp_packet(struct sr_instance* sr,
   if (type == 0) { // echo reply
     printf("icmp echo reply\n");
     int total = sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t);
-    printf("total size: %d\n", total);
     eth_hdr = (sr_ethernet_hdr_t *)malloc(total);
     memset(eth_hdr, 0, total);
     // modify ethernet header
@@ -252,7 +251,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     memcpy(eth_hdr->ether_shost, ori_eth_hdr->ether_dhost, sizeof(uint8_t) * ETHER_ADDR_LEN);
     memcpy(eth_hdr->ether_dhost, ori_eth_hdr->ether_shost, sizeof(uint8_t) * ETHER_ADDR_LEN);
     // modify ip header
-    sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t));
+    sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)((void*)eth_hdr + sizeof(sr_ethernet_hdr_t));
     ip_hdr->ip_v = ori_ip_hdr->ip_v;
     ip_hdr->ip_hl = ori_ip_hdr->ip_hl;
     ip_hdr->ip_tos = ori_ip_hdr->ip_tos;
@@ -265,14 +264,12 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     ip_hdr->ip_dst = ori_ip_hdr->ip_src;
     ip_hdr->ip_sum = 0;
     ip_hdr->ip_sum = cksum(ip_hdr, sizeof(sr_ip_hdr_t));
-    print_hdr_ip((uint8_t *)ip_hdr);
     // modify icmp header
     sr_icmp_hdr_t *icmp_hdr = (sr_icmp_hdr_t *)(ip_hdr + sizeof(sr_ip_hdr_t));
     icmp_hdr->icmp_type = type;
     icmp_hdr->icmp_code = code;
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
-    print_hdrs((uint8_t *)eth_hdr, total);
   } else { 
     eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_t3_hdr_t));
     // modify ethernet header
