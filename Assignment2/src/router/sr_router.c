@@ -250,7 +250,10 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     // fill original ip header and icmp header
     memcpy(eth_hdr + sizeof(sr_ethernet_hdr_t), packet, len);
     printf("icmp echo reply\n");
-    print_hdrs((uint8_t *)eth_hdr, len + sizeof(sr_ethernet_hdr_t));
+    print_hdr_eth((uint8_t *)eth_hdr);
+    print_hdr_ip((uint8_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t)));
+    print_hdr_icmp((uint8_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t)));
+    print_hdrs(eth_hdr, len + sizeof(sr_ethernet_hdr_t));
     // modify ip header
     sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t));
     ip_hdr->ip_ttl = INIT_TTL;
