@@ -242,7 +242,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
   sr_ip_hdr_t *ori_ip_hdr = (sr_ip_hdr_t *)(packet);
   sr_ethernet_hdr_t *eth_hdr;
   if (type == 0) { // echo reply
-    eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + len);
+    eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t));
     // modify ethernet header
     eth_hdr->ether_type = htons(ethertype_ip);
     memcpy(eth_hdr->ether_shost, ori_eth_hdr->ether_dhost, sizeof(uint8_t) * ETHER_ADDR_LEN);
@@ -269,7 +269,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
   } else { 
-    eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t));
+    eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_t3_hdr_t));
     // modify ethernet header
     eth_hdr->ether_type = htons(ethertype_ip);
     memcpy(eth_hdr->ether_shost, sr_get_interface(sr, interface)->addr, sizeof(uint8_t) * ETHER_ADDR_LEN);
@@ -288,7 +288,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     ip_hdr->ip_sum = 0;
     ip_hdr->ip_sum = cksum(ip_hdr, sizeof(sr_ip_hdr_t));
     // modify icmp header
-    sr_icmp_hdr_t *icmp_hdr = (sr_icmp_hdr_t *)(ip_hdr + sizeof(sr_ip_hdr_t));
+    sr_icmp_t3_hdr_t *icmp_hdr = (sr_icmp_t3_hdr_t *)(ip_hdr + sizeof(sr_ip_hdr_t));
     icmp_hdr->icmp_type = type;
     icmp_hdr->icmp_code = code;
     icmp_hdr->icmp_sum = 0;
