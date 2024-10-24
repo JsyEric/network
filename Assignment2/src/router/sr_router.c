@@ -271,30 +271,30 @@ void sr_send_icmp_packet(struct sr_instance* sr,
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
   } else { 
-    eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_t3_hdr_t));
+    eth_hdr = (sr_ethernet_hdr_t *)malloc(sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t));
     // modify ethernet header
     eth_hdr->ether_type = htons(ethertype_ip);
     memcpy(eth_hdr->ether_shost, sr_get_interface(sr, interface)->addr, sizeof(uint8_t) * ETHER_ADDR_LEN);
     memcpy(eth_hdr->ether_dhost, ori_eth_hdr->ether_shost, sizeof(uint8_t) * ETHER_ADDR_LEN);
     // fill ip header and icmp header
-    sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)(eth_hdr + sizeof(sr_ethernet_hdr_t));
+    sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *)((void*)eth_hdr + sizeof(sr_ethernet_hdr_t));
     memcpy(ip_hdr, packet, sizeof(sr_ip_hdr_t));
     // modify ip header
     ip_hdr->ip_ttl = INIT_TTL;
     ip_hdr->ip_len = htons(sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t));
     ip_hdr->ip_off = IP_DF;
-    ip_hdr->ip_ttl = INIT_TTL;
     ip_hdr->ip_p = ip_protocol_icmp;
     ip_hdr->ip_src = sr_get_interface(sr, interface)->ip;
     ip_hdr->ip_dst = ori_ip_hdr->ip_src;
     ip_hdr->ip_sum = 0;
     ip_hdr->ip_sum = cksum(ip_hdr, sizeof(sr_ip_hdr_t));
     // modify icmp header
-    sr_icmp_t3_hdr_t *icmp_hdr = (sr_icmp_t3_hdr_t *)(ip_hdr + sizeof(sr_ip_hdr_t));
+    sr_icmp_hdr_t *icmp_hdr = (sr_icmp_hdr_t *)((void*)ip_hdr + sizeof(sr_ip_hdr_t));
     icmp_hdr->icmp_type = type;
     icmp_hdr->icmp_code = code;
     icmp_hdr->icmp_sum = 0;
     icmp_hdr->icmp_sum = cksum(icmp_hdr, sizeof(sr_icmp_hdr_t));
+    memcpy(icmp_hdr->data, packet, sizeof(sr_ip_hdr_t) + 8);
   }
   sr_send_packet(sr, (uint8_t *)eth_hdr, sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t), interface);
   free(eth_hdr);
