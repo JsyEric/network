@@ -243,7 +243,7 @@ void sr_send_icmp_packet(struct sr_instance* sr,
   sr_ethernet_hdr_t *eth_hdr;
   if (type == 0) { // echo reply
     printf("icmp echo reply\n");
-    int total = sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t)
+    int total = sizeof(sr_ethernet_hdr_t) + sizeof(sr_ip_hdr_t) + sizeof(sr_icmp_hdr_t);
     printf("total size: %d\n", total);
     eth_hdr = (sr_ethernet_hdr_t *)malloc(total);
     memset(eth_hdr, 0, total);
